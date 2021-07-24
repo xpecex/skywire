@@ -13,8 +13,6 @@ IMAGE_LICENSE="GPL-3.0+"
 IMAGE_ALT_REF="$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 7 | head -n 1)"
 
 CGO_ENABLED=0
-GOOS=linux
-GOARCH=
 GO111MODULE=on
 
 # RELEASES LIST
@@ -61,35 +59,6 @@ for RELEASE in "${RELEASES[@]}"; do
     # PRINT BUILD INFO
     echo " ========= BUILDING RELEASE: $RELEASE ========= "
 
-    # PRINT DOWNLOAD docker-entrypoint.sh AND prepare-run-env.sh
-    echo "DOWNLOAD entrypoint.sh update.sh"
-
-    # DOWNLOAD docker-entrypoint.sh AND prepare-run-env.sh
-    wget -q -O entrypoint.sh https://raw.githubusercontent.com/skycoin/skywire/v${RELEASE}/docker/images/visor/entrypoint.sh
-    wget -q -O update.sh -c https://github.com/skycoin/skywire/blob/v${RELEASE}/docker/images/visor/update.sh
-    chmod +x entrypoint.sh update.sh
-
-    for ARCH in "${ARCHS[@]}"; do
-
-        mkdir -p "$ARCH"
-
-        # CHECK ARCH
-        case "$ARCH" in
-        linux/amd64)
-            echo "amd64" > "$ARCH/arch"
-            ;;
-        linux/arm/v7)
-            echo "arm" > "$ARCH/arch"
-            ;;
-        linux/arm64)
-            echo "arm64" > "$ARCH/arch"
-            ;;
-        linux/386)
-            echo "386" > "$ARCH/arch"
-            ;;
-        esac
-    done
-
     # PRINT BUILD INFO
     echo "STARTING THE BUILD"
 
@@ -108,8 +77,6 @@ for RELEASE in "${RELEASES[@]}"; do
             --build-arg IMAGE_URL="$IMAGE_URL" \
             --build-arg IMAGE_LICENSE="$IMAGE_LICENSE" \
             --build-arg CGO_ENABLED="$CGO_ENABLED" \
-            --build-arg GOOS="$GOOS" \
-            --build-arg GOARCH="$GOARCH" \
             --build-arg GO111MODULE="$GO111MODULE" \
             --cache-from "${IMAGE_NAME}:latest" \
             --platform "$(echo ${ARCHS[@]} | sed 's/ /,/g')" \
@@ -129,20 +96,12 @@ for RELEASE in "${RELEASES[@]}"; do
             --build-arg IMAGE_URL="$IMAGE_URL" \
             --build-arg IMAGE_LICENSE="$IMAGE_LICENSE" \
             --build-arg CGO_ENABLED="$CGO_ENABLED" \
-            --build-arg GOOS="$GOOS" \
-            --build-arg GOARCH="$GOARCH" \
             --build-arg GO111MODULE="$GO111MODULE" \
             --cache-from "${IMAGE_NAME}:latest" \
             --platform "$(echo ${ARCHS[@]} | sed 's/ /,/g')" \
             -t "${IMAGE_NAME}:${IMAGE_VER:-$RELEASE}" \
             .
     fi
-
-    # PRINT DEL INFO
-    echo "Removing files used in build"
-
-    # Remove Files
-    rm -rf linux entrypoint.sh update.sh
 
 done
 

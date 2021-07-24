@@ -1,25 +1,18 @@
 FROM golang:alpine AS builder
 
 ARG CGO_ENABLED
-ARG GOOS
-ARG GOARCH
 ARG GO111MODULE
 ARG IMAGE_VER
-ARG TARGETPLATFORM
-
-COPY $TARGETPLATFORM/arch /tmp/
 
 ENV CGO_ENABLED=${CGO_ENABLED} \
-    GOOS=$GOOS  \
     GO111MODULE=$GO111MODULE
 
-WORKDIR /skywire
+WORKDIR /go/skywire
 
-RUN GOARCH=$GOARCH || $(cat /tmp/arch) && \
-    echo "GOOS => $GOOS" && \
+RUN echo "GOOS => $GOOS" && \
     echo "GOARCH => $GOARCH" && \
     apk add git && \
-    git clone --branch v$IMAGE_VER https://github.com/skycoin/skywire.git /skywire && \
+    git clone --branch v$IMAGE_VER https://github.com/skycoin/skywire.git /go/skywire && \
     go build -mod=vendor -tags netgo -ldflags="-w -s" \
       -o skywire-visor cmd/skywire-visor/skywire-visor.go &&\
     go build -mod=vendor -ldflags="-w -s" -o skywire-cli ./cmd/skywire-cli	&&\
@@ -37,8 +30,6 @@ COPY --from=builder /go/skywire/apps /apps
 COPY --from=builder /go/skywire/docker/images/visor/update.sh update.sh
 COPY --from=builder /go/skywire/skywire-cli bin/skywire-cli
 COPY --from=builder /go/skywire/docker/images/visor/entrypoint.sh entrypoint.sh
-COPY update.sh ./
-COPY entrypoint.sh ./
 
 RUN ./update.sh
 
