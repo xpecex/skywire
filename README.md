@@ -20,8 +20,6 @@
 ### Tags:
  - latest
  - 0.4.2
- - 0.4.1
- - 0.4.0
 
 ### How to use this image
 
