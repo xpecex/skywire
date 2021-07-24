@@ -17,12 +17,10 @@ GO111MODULE=on
 
 # RELEASES LIST
 RELEASES=(
-    "0.4.0"
-    "0.4.1"
     "0.4.2"
 )
 # LATEST RELEASE
-LATEST_RELEASE=$(curl -s "https://github.com/skycoin/skywire/releases/latest" | cut -d'/' -f 8 | cut -d'"' -f 1)
+LATEST_RELEASE=$(curl -s "https://github.com/skycoin/skywire/releases/latest" | cut -d'/' -f 8 | cut -d'"' -f 1 | cut -d'v' -f 2)
 
 # ARCHITECTURE LIST
 ARCHS=(

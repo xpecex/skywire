@@ -13,7 +13,7 @@
 
 ### What is Skywire?
 
-> **Skywire** => The new Decentralized Internet, a wireless mesh network that pays you for supporting it.
+> The new Decentralized Internet, a wireless mesh network that pays you for supporting it.
 > Learn more: [https://www.skycoin.com/](https://www.skycoin.com/)
 
 
@@ -26,7 +26,21 @@
 ### How to use this image
 
 ```shell
-docker run --restart always -p 8000:8000 -v <YOUR_CONFIG_DIR>:/opt/skywire --name=skywire xpecex/skywire:latest skywire-visor
+# Generate config
+docker run \
+--rm \
+-v <YOUR_CONFIG_DIR>:/opt/skywire \
+xpecex/skywire:latest \
+skywire-cli visor gen-config --is-hypervisor
+
+# Run
+docker run \
+--restart always \
+-p 8000:8000 \
+-v <YOUR_CONFIG_DIR>:/opt/skywire \
+--name=skywire \
+xpecex/skywire:latest \
+skywire-visor
 ````
 *NOTE: replace **YOUR_CONFIG_DIR** with the path you prefer to save skywire configuration and data files*
 
