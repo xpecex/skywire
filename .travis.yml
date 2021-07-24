@@ -1,0 +1,16 @@
+dist: bionic
+language: minimal
+env:
+  global:
+    - DOCKER_CLI_EXPERIMENTAL="enabled"
+before_install:
+  - sudo apt-get install -yqq apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get install -yqq docker-ce docker-ce-cli containerd.io
+  - docker run --privileged --rm tonistiigi/binfmt --install all
+install:
+  - docker buildx create --use --name builder --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--oci-worker-snapshotter=stargz'
+  - docker buildx inspect --bootstrap
+script: bash build.sh
