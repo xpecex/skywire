@@ -9,7 +9,7 @@ before_install:
   - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
   - sudo apt-get update
   - sudo apt-get install -yqq docker-ce docker-ce-cli containerd.io
-  - sudo systemctl status docker
+  - sudo systemctl start docker
   - sudo docker run --privileged --rm tonistiigi/binfmt --install all
 install:
   - sudo docker buildx create --use --name builder --driver docker-container --driver-opt image=moby/buildkit:master --buildkitd-flags '--oci-worker-snapshotter=stargz'
