@@ -15,12 +15,13 @@ IMAGE_ALT_REF="$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 7 | head -n 1)"
 CGO_ENABLED=0
 GO111MODULE=on
 
-# RELEASES LIST
-RELEASES=(
-    "0.4.2"
-)
 # LATEST RELEASE
 LATEST_RELEASE=$(curl -s "https://github.com/skycoin/skywire/releases/latest" | cut -d'/' -f 8 | cut -d'"' -f 1 | cut -d'v' -f 2)
+
+# RELEASES LIST
+RELEASES=(
+    "$LATEST_RELEASE"
+)
 
 # ARCHITECTURE LIST
 ARCHS=(
