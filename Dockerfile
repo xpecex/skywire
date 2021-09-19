@@ -9,8 +9,9 @@ ENV CGO_ENABLED=${CGO_ENABLED} \
 
 WORKDIR /go/skywire
 
-RUN apk add git && \
-    git clone -q --branch v$IMAGE_VER https://github.com/skycoin/skywire.git /go/skywire && \
+RUN apk update --no-cache && apk upgrade --no-cache && \
+    apk add --no-cache git && \
+    git clone -q -b v$IMAGE_VER https://github.com/skycoin/skywire.git /go/skywire && \
     go build -mod=vendor -tags netgo -ldflags="-w -s" \
       -o skywire-visor cmd/skywire-visor/skywire-visor.go &&\
     go build -mod=vendor -ldflags="-w -s" -o skywire-cli ./cmd/skywire-cli	&&\
