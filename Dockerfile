@@ -1,4 +1,4 @@
-FROM golang:alpine AS builder
+FROM golang:1.16.3-alpine3.12 AS builder
 
 ARG CGO_ENABLED
 ARG GO111MODULE
